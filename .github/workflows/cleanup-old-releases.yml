@@ -1,0 +1,32 @@
+# Keeps this repository from piling up installers: a release older than a
+# week is deleted, except the Latest one. Logic and reasons:
+# .github/cleanup-old-releases.sh
+#
+# Two triggers, because GitHub disables a scheduled workflow in a public
+# repository after 60 days without commits — and this repository gets
+# releases, not commits. Publishing a release still runs it, and publishing is
+# the only thing that adds files.
+name: Cleanup old releases
+
+on:
+  release:
+    types: [published]
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cleanup-old-releases
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash .github/cleanup-old-releases.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          KEEP_DAYS: '7'

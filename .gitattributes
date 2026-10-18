@@ -1,0 +1,4 @@
+# Run on Linux runners: a CR at the end of a bash line becomes part of the
+# value (KEEP_DAYS="7\r"), and the date check then fails open.
+*.sh text eol=lf
+*.yml text eol=lf
